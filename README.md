@@ -1,1 +1,1 @@
-# WaniKani Kanji Carousel
+# WaniKani Carousel
