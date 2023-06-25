@@ -1,7 +1,24 @@
+using Hangfire;
+using Hangfire.Storage.SQLite;
+using WebApp.Lib;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpClient();
+
 builder.Services.AddControllersWithViews();
+
+GlobalConfiguration.Configuration.UseSQLiteStorage();
+
+builder.Services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSQLiteStorage());
+
+builder.Services.AddHangfireServer();
+
+builder.Services.AddScoped<SubjectDownloader>();
 
 var app = builder.Build();
 
@@ -10,6 +27,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseHangfireDashboard();
+
 app.UseStaticFiles();
 
 app.UseRouting();

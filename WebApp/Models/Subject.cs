@@ -1,5 +1,8 @@
-﻿namespace WebApp.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace WebApp.Models
 {
+    [Index("RemoteId")]
     public class Subject
     {
         public int SubjectId { get; set; }
@@ -13,6 +16,8 @@
         public DateTime? HiddenAt { get; set; }
 
         public int SeenLock { get; set; }
+
+        public int RemoteId { get; set; }
 
         public List<SubjectMeaning> Meanings { get; } = new();
 

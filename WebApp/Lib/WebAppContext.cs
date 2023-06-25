@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
 
-namespace WebApp
+namespace WebApp.Lib
 {
     public class WebAppContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<SubjectMeaning> SubjectMeanings { get; set; }
         public DbSet<SubjectReading> SubjectReadings { get; set; }

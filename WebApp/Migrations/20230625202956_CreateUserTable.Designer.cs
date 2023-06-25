@@ -11,8 +11,8 @@ using WebApp.Lib;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    [Migration("20230625182420_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230625202956_CreateUserTable")]
+    partial class CreateUserTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,6 +101,29 @@ namespace WebApp.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("SubjectReadings");
+                });
+
+            modelBuilder.Entity("WebApp.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("Username");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WebApp.Models.SubjectMeaning", b =>

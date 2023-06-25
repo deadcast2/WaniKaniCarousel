@@ -1,20 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using WebApp.Lib;
 using WebApp.Models;
 
 namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly SubjectDownloader _SubjectDownloader;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(SubjectDownloader subjectDownloader)
         {
-            _logger = logger;
+            _SubjectDownloader = subjectDownloader;
         }
 
         public IActionResult Index()
         {
+            _SubjectDownloader.Start();
+
             return View();
         }
 

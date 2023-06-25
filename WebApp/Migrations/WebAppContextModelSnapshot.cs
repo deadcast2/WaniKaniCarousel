@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebApp;
+using WebApp.Lib;
 
 #nullable disable
 
@@ -36,10 +36,15 @@ namespace WebApp.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("RemoteId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SeenLock")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("SubjectId");
+
+                    b.HasIndex("RemoteId");
 
                     b.ToTable("Subjects");
                 });
@@ -98,6 +103,29 @@ namespace WebApp.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("SubjectReadings");
+                });
+
+            modelBuilder.Entity("WebApp.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("Username");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WebApp.Models.SubjectMeaning", b =>
