@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.Storage.SQLite;
+using Microsoft.EntityFrameworkCore;
 using WebApp.Lib;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,10 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<SubjectDownloader>();
 
 var app = builder.Build();
+
+// Autorun the migrations.
+using var db = new WebAppContext();
+db.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
