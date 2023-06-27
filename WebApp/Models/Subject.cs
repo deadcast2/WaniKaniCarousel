@@ -11,6 +11,8 @@ namespace WebApp.Models
 
         public string Characters { get; set; } = string.Empty;
 
+        public string? ImageData { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime? HiddenAt { get; set; }

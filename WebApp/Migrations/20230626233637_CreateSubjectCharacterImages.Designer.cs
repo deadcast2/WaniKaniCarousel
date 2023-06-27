@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.Lib;
 
@@ -10,9 +11,11 @@ using WebApp.Lib;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    partial class WebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230626233637_CreateSubjectCharacterImages")]
+    partial class CreateSubjectCharacterImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.8");
@@ -33,9 +36,6 @@ namespace WebApp.Migrations
                     b.Property<DateTime?>("HiddenAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImageData")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
@@ -50,6 +50,34 @@ namespace WebApp.Migrations
                     b.HasIndex("RemoteId");
 
                     b.ToTable("Subjects");
+                });
+
+            modelBuilder.Entity("WebApp.Models.SubjectCharacterImage", b =>
+                {
+                    b.Property<int>("SubjectCharacterImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("SubjectCharacterImageId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("SubjectCharacterImages");
                 });
 
             modelBuilder.Entity("WebApp.Models.SubjectMeaning", b =>
@@ -131,6 +159,17 @@ namespace WebApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WebApp.Models.SubjectCharacterImage", b =>
+                {
+                    b.HasOne("WebApp.Models.Subject", "Subject")
+                        .WithMany("CharacterImages")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("WebApp.Models.SubjectMeaning", b =>
                 {
                     b.HasOne("WebApp.Models.Subject", "Subject")
@@ -155,6 +194,8 @@ namespace WebApp.Migrations
 
             modelBuilder.Entity("WebApp.Models.Subject", b =>
                 {
+                    b.Navigation("CharacterImages");
+
                     b.Navigation("Meanings");
 
                     b.Navigation("Readings");

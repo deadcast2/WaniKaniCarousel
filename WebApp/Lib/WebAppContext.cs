@@ -10,14 +10,15 @@ namespace WebApp.Lib
         public DbSet<SubjectMeaning> SubjectMeanings { get; set; }
         public DbSet<SubjectReading> SubjectReadings { get; set; }
 
-        public string DbPath { get; }
-
-        public WebAppContext()
+        public static string DbPath
         {
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
+            get
+            {
+                var folder = Environment.SpecialFolder.LocalApplicationData;
+                var path = Environment.GetFolderPath(folder);
 
-            DbPath = Path.Join(path, "webapp.db");
+                return Path.Join(path, "WaniKaniCarousel.db");
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

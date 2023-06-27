@@ -22,6 +22,9 @@ namespace WebApp.Models.DTOs
         [JsonPropertyName("characters")]
         public string Characters { get; set; } = string.Empty;
 
+        [JsonPropertyName("character_images")]
+        public List<SubjectCharacterImageDTO> CharacterImages { get; set; } = new();
+
         [JsonPropertyName("meanings")]
         public List<SubjectMeaningDTO> Meanings { get; set; } = new();
 

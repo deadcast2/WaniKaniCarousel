@@ -8,13 +8,11 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddControllersWithViews();
 
-GlobalConfiguration.Configuration.UseSQLiteStorage();
-
 builder.Services.AddHangfire(configuration => configuration
-            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            .UseSimpleAssemblyNameTypeSerializer()
-            .UseRecommendedSerializerSettings()
-            .UseSQLiteStorage());
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSQLiteStorage(WebAppContext.DbPath));
 
 builder.Services.AddHangfireServer();
 

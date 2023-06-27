@@ -80,7 +80,7 @@ namespace WebApp.Lib
 
             using var context = new WebAppContext();
 
-            foreach (var subject in subjects.Data.Where(d => !string.IsNullOrWhiteSpace(d.Data.Characters)))
+            foreach (var subject in subjects.Data)
             {
                 var subjectRecord = context.Subjects.FirstOrDefault(s => s.RemoteId == subject.Id);
 
@@ -88,7 +88,8 @@ namespace WebApp.Lib
                 {
                     var newSubject = context.Subjects.Add(new Models.Subject
                     {
-                        Characters = subject.Data.Characters,
+                        Characters = subject.Data.Characters ?? string.Empty,
+                        ImageData = DownloadFile(subject.Data.CharacterImages),
                         CreatedAt = subject.Data.CreatedAt,
                         HiddenAt = subject.Data.HiddenAt,
                         Level = subject.Data.Level,
@@ -113,6 +114,15 @@ namespace WebApp.Lib
             }
 
             context.SaveChanges();
+        }
+
+        private string? DownloadFile(List<SubjectCharacterImageDTO> characterImages)
+        {
+            var image = characterImages.Find(m => m.ContentType.Contains("svg"));
+
+            if (image == null) return null;
+
+            return new HttpClient().GetStringAsync(image.Url).Result;
         }
 
         private HttpClient GetClient()
