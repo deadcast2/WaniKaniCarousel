@@ -18,7 +18,7 @@ namespace WebApp.Controllers
         {
             _SubjectDownloader.Start();
 
-            return View();
+            return View(SubjectSelector.GetNext());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
