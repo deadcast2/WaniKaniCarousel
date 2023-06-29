@@ -1,7 +1,7 @@
 ﻿@model DashboardViewModel
 @{ ViewData["Title"] = "Home Page"; }
 
-<div class="text-center">
+<div class="text-center mt-4">
     @if (Model.HasImage)
     {
         <svg>
@@ -10,6 +10,9 @@
     } 
     else
     {
-        <h1 class="display-1">@Model.Characters</h1>
+        <h1 class="subject">@Model.Characters</h1>
     }
+
+    <div>@Model.Meaning</div>
+    <div>@Model.Reading</div>
 </div>

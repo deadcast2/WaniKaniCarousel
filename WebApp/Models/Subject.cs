@@ -21,8 +21,8 @@ namespace WebApp.Models
 
         public int RemoteId { get; set; }
 
-        public List<SubjectMeaning> Meanings { get; } = new();
+        public virtual ICollection<SubjectMeaning> Meanings { get; } = new HashSet<SubjectMeaning>();
 
-        public List<SubjectReading> Readings { get; } = new();
+        public virtual ICollection<SubjectReading> Readings { get; } = new HashSet<SubjectReading>();
     }
 }

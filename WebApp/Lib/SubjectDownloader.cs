@@ -96,15 +96,17 @@ namespace WebApp.Lib
                         RemoteId = subject.Id
                     });
 
-                    newSubject.Entity.Meanings.AddRange(subject.Data.Meanings.Select(m => new Models.SubjectMeaning
+                    context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new Models.SubjectMeaning
                     {
+                        Subject = newSubject.Entity,
                         AcceptedAnswer = m.AcceptedAnswer,
                         Meaning = m.Meaning,
                         Primary = m.Primary
                     }));
 
-                    newSubject.Entity.Readings.AddRange(subject.Data.Readings.Select(m => new Models.SubjectReading
+                    context.SubjectReadings.AddRange(subject.Data.Readings.Select(m => new Models.SubjectReading
                     {
+                        Subject = newSubject.Entity,
                         AcceptedAnswer = m.AcceptedAnswer,
                         Reading = m.Reading,
                         Type = m.Type,
@@ -118,7 +120,7 @@ namespace WebApp.Lib
 
         private string? DownloadFile(List<SubjectCharacterImageDTO> characterImages)
         {
-            var image = characterImages.Find(m => m.ContentType.Contains("svg"));
+            var image = characterImages.Find(m => m.ContentType.Contains("svg") && m.Metadata.InlineStyles);
 
             if (image == null) return null;
 

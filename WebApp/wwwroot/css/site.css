@@ -16,3 +16,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+h1.subject {
+    font-size: 8em;
+}

@@ -8,11 +8,17 @@
         {
             Characters = subject.Characters;
             ImageData = subject.ImageData;
+            Meaning = subject.Meanings.FirstOrDefault(m => m.Primary)?.Meaning;
+            Reading = subject.Readings.FirstOrDefault(m => m.Primary)?.Reading;
         }
 
-        public string Characters { get; set; } = "No subject downloaded";
+        public string Characters { get; set; } = "No subjects downloaded yet :(";
 
         public string? ImageData { get; set; }
+        
+        public string? Meaning { get; }
+
+        public string? Reading { get; }
 
         public bool HasImage => !string.IsNullOrWhiteSpace(ImageData);
     }
