@@ -12,5 +12,9 @@ namespace WebApp.Models
         public string Username { get; set; } = string.Empty;
 
         public DateTime StartedAt { get; set; }
+
+        public int AvailableReviewsCount { get; set; }
+
+        public int AvailableLessonsCount { get; set; }
     }
 }

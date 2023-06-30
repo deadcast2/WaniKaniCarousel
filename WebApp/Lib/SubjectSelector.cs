@@ -9,6 +9,8 @@ namespace WebApp.Lib
         {
             using var context = new WebAppContext();
 
+            var user = context.Users.FirstOrDefault() ?? new();
+
             if (!context.Subjects.Any())
                 return new DashboardViewModel();
 
@@ -22,7 +24,7 @@ namespace WebApp.Lib
 
                 context.SaveChanges();
 
-                return new DashboardViewModel(subject);
+                return new DashboardViewModel(user, subject);
             }
             else
             {
@@ -36,7 +38,7 @@ namespace WebApp.Lib
 
                     context.SaveChanges();
 
-                    return new DashboardViewModel(subject);
+                    return new DashboardViewModel(user, subject);
                 }
                 else
                 {
@@ -46,7 +48,7 @@ namespace WebApp.Lib
 
                     context.SaveChanges();
 
-                    return new DashboardViewModel(subject);
+                    return new DashboardViewModel(user, subject);
                 }
             }
         }

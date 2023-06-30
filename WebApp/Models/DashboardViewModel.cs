@@ -4,8 +4,11 @@
     {
         public DashboardViewModel() { }
 
-        public DashboardViewModel(Subject subject)
+        public DashboardViewModel(User user, Subject subject)
         {
+            AvailableReviewsCount = user.AvailableReviewsCount;
+            AvailableLessonsCount = user.AvailableLessonsCount;
+            Level = user.Level;
             Characters = subject.Characters;
             ImageData = subject.ImageData;
             Meaning = subject.Meanings.FirstOrDefault(m => m.Primary)?.Meaning;
@@ -19,6 +22,12 @@
         public string? Meaning { get; }
 
         public string? Reading { get; }
+
+        public int Level { get; }
+
+        public int AvailableReviewsCount { get; }
+
+        public int AvailableLessonsCount { get; }
 
         public bool HasImage => !string.IsNullOrWhiteSpace(ImageData);
     }

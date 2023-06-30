@@ -24,12 +24,12 @@ namespace WebApp.Lib
         {
             HttpClient httpClient = GetClient();
 
-            ReadUser(httpClient);
+            var summary = ReadSummary(httpClient);
 
-            ReadSummary(httpClient);
+            ReadUser(summary, httpClient);
         }
 
-        private void ReadUser(HttpClient httpClient)
+        private void ReadUser(SummaryDTO summary, HttpClient httpClient)
         {
             var response = httpClient.GetAsync("user").Result;
 
@@ -42,6 +42,8 @@ namespace WebApp.Lib
             using var context = new WebAppContext();
 
             var userRecord = context.Users.FirstOrDefault(u => u.Username == user.Data.Username);
+            var availableReviewsCount = summary.Data.Reviews.Where(r => r.AvailableAt < DateTime.UtcNow).Sum(r => r.SubjectIds.Count);
+            var availableLessonsCount = summary.Data.Lessons.Sum(r => r.SubjectIds.Count);
 
             if (userRecord == null)
             {
@@ -49,34 +51,38 @@ namespace WebApp.Lib
                 {
                     Level = user.Data.Level,
                     StartedAt = user.Data.StartedAt,
-                    Username = user.Data.Username
+                    Username = user.Data.Username,
+                    AvailableReviewsCount = availableReviewsCount,
+                    AvailableLessonsCount = availableLessonsCount
                 });
             }
             else
             {
                 userRecord.Level = user.Data.Level;
+                userRecord.AvailableReviewsCount = availableReviewsCount;
+                userRecord.AvailableLessonsCount = availableLessonsCount;
             }
 
             context.SaveChanges();
         }
 
-        private void ReadSummary(HttpClient httpClient)
+        private SummaryDTO ReadSummary(HttpClient httpClient)
         {
             var response = httpClient.GetAsync("summary").Result;
 
-            if (!response.IsSuccessStatusCode) return;
+            if (!response.IsSuccessStatusCode) return new();
 
             var summary = response.Content.ReadFromJsonAsync<SummaryDTO>().Result;
 
-            if (summary == null) return;
+            if (summary == null) return new();
 
             response = httpClient.GetAsync($"subjects?ids={string.Join(",", summary.Data.Reviews.SelectMany(r => r.SubjectIds))}").Result;
 
-            if (!response.IsSuccessStatusCode) return;
+            if (!response.IsSuccessStatusCode) return new();
 
             var subjects = response.Content.ReadFromJsonAsync<SubjectsDTO>().Result;
 
-            if (subjects == null) return;
+            if (subjects == null) return new();
 
             using var context = new WebAppContext();
 
@@ -116,6 +122,8 @@ namespace WebApp.Lib
             }
 
             context.SaveChanges();
+
+            return summary;
         }
 
         private string? DownloadFile(List<SubjectCharacterImageDTO> characterImages)
