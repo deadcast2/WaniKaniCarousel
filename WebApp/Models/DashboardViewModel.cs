@@ -8,12 +8,15 @@
         {
             AvailableReviewsCount = user.AvailableReviewsCount;
             AvailableLessonsCount = user.AvailableLessonsCount;
+            Username = user.Username;
             Level = user.Level;
             Characters = subject.Characters;
             ImageData = subject.ImageData;
             Meaning = subject.Meanings.FirstOrDefault(m => m.Primary)?.Meaning;
             Reading = subject.Readings.FirstOrDefault(m => m.Primary)?.Reading;
         }
+
+        public string Username { get; set; }
 
         public string Characters { get; set; } = "No subjects downloaded yet :(";
 
