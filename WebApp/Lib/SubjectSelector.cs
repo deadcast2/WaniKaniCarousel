@@ -11,46 +11,37 @@ namespace WebApp.Lib
 
             var user = context.Users.FirstOrDefault() ?? new();
 
-            if (!context.Subjects.Any())
+            if (!user.Subjects.Any())
                 return new DashboardViewModel();
 
-            var currSeenLock = context.Subjects.Max(s => s.SeenLock);
+            return new DashboardViewModel(user, GetNextSubject(user, context));
+        }
 
-            if (currSeenLock == 0)
+        private static Subject GetNextSubject(User user, WebAppContext context)
+        {
+            var currSeenLock = user.Subjects.Max(s => s.SeenLock);
+
+            // Only show subjects relevant from the past two weeks.
+            var subjects = context.Subjects.Where(s => s.UpdatedAt > DateTime.UtcNow.AddDays(-14));
+
+            if (currSeenLock > 0)
             {
-                var subject = context.Subjects.OrderBy(s => EF.Functions.Random()).First();
+                var potentialSubjects = context.Subjects.Where(s => s.SeenLock == currSeenLock - 1);
 
-                subject.SeenLock++;
-
-                context.SaveChanges();
-
-                return new DashboardViewModel(user, subject);
-            }
-            else
-            {
-                var subjectSet = context.Subjects.Where(s => s.SeenLock == currSeenLock - 1);
-
-                if (!subjectSet.Any())
+                // When every subject has been viewed ignore the above predicate and just pick any at random.
+                if (potentialSubjects.Any())
                 {
-                    var subject = context.Subjects.OrderBy(s => EF.Functions.Random()).First();
-
-                    subject.SeenLock++;
-
-                    context.SaveChanges();
-
-                    return new DashboardViewModel(user, subject);
-                }
-                else
-                {
-                    var subject = context.Subjects.Where(s => s.SeenLock == currSeenLock - 1).OrderBy(s => EF.Functions.Random()).First();
-
-                    subject.SeenLock++;
-
-                    context.SaveChanges();
-
-                    return new DashboardViewModel(user, subject);
+                    subjects = potentialSubjects;
                 }
             }
+
+            var nextSubject = subjects.OrderBy(s => EF.Functions.Random()).First();
+
+            nextSubject.SeenLock++;
+
+            context.SaveChanges();
+
+            return nextSubject;
         }
     }
 }

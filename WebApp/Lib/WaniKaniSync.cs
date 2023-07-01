@@ -72,6 +72,9 @@ namespace WebApp.Lib
 
                 if (subjectRecord == null)
                 {
+                    // Assign the correct lock value to make sure this new subject gets a chance to be viewed.
+                    var seenLock = user.Subjects.Select(s => s.SeenLock).DefaultIfEmpty(0).Max();
+
                     var newSubject = context.Subjects.Add(new Subject
                     {
                         User = user,
@@ -82,7 +85,7 @@ namespace WebApp.Lib
                         HiddenAt = subject.Data.HiddenAt,
                         Level = subject.Data.Level,
                         RemoteId = subject.Id,
-                        SeenLock = context.Subjects.Select(s => s.SeenLock).DefaultIfEmpty(1).Max() - 1
+                        SeenLock = seenLock > 0 ? seenLock - 1 : 0
                     });
 
                     context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new SubjectMeaning
