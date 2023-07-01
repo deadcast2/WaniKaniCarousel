@@ -81,7 +81,8 @@ namespace WebApp.Lib
                         UpdatedAt = DateTime.UtcNow,
                         HiddenAt = subject.Data.HiddenAt,
                         Level = subject.Data.Level,
-                        RemoteId = subject.Id
+                        RemoteId = subject.Id,
+                        SeenLock = context.Subjects.Select(s => s.SeenLock).DefaultIfEmpty(1).Max() - 1
                     });
 
                     context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new SubjectMeaning
