@@ -78,6 +78,7 @@ namespace WebApp.Lib
                         Characters = subject.Data.Characters ?? string.Empty,
                         ImageData = DownloadFile(subject.Data.CharacterImages),
                         CreatedAt = subject.Data.CreatedAt,
+                        UpdatedAt = DateTime.UtcNow,
                         HiddenAt = subject.Data.HiddenAt,
                         Level = subject.Data.Level,
                         RemoteId = subject.Id
@@ -99,6 +100,11 @@ namespace WebApp.Lib
                         Type = m.Type,
                         Primary = m.Primary
                     }));
+                }
+                else
+                {
+                    // This subject must be important to study again since the response provided it.
+                    subjectRecord.UpdatedAt = DateTime.UtcNow;
                 }
             }
 

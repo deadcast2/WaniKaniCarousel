@@ -25,6 +25,8 @@ namespace WebApp.Models
 
         public int RemoteId { get; set; }
 
+        public DateTime UpdatedAt { get; set; }
+
         public virtual ICollection<SubjectMeaning> Meanings { get; } = new HashSet<SubjectMeaning>();
 
         public virtual ICollection<SubjectReading> Readings { get; } = new HashSet<SubjectReading>();
