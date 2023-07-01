@@ -7,9 +7,9 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SubjectDownloader _SubjectDownloader;
+        private readonly WaniKaniSync _SubjectDownloader;
 
-        public HomeController(SubjectDownloader subjectDownloader)
+        public HomeController(WaniKaniSync subjectDownloader)
         {
             _SubjectDownloader = subjectDownloader;
         }

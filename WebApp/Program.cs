@@ -17,7 +17,7 @@ builder.Services.AddHangfire(configuration => configuration
 
 builder.Services.AddHangfireServer();
 
-builder.Services.AddScoped<SubjectDownloader>();
+builder.Services.AddScoped<WaniKaniSync>();
 
 var app = builder.Build();
 

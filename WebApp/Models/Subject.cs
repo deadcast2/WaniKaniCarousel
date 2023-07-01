@@ -7,6 +7,10 @@ namespace WebApp.Models
     {
         public int SubjectId { get; set; }
 
+        public int UserId { get; set; }
+
+        public virtual User User { get; set; } = new();
+
         public int Level { get; set; }
 
         public string Characters { get; set; } = string.Empty;

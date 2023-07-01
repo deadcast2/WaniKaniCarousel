@@ -1,15 +1,16 @@
 ﻿using Hangfire;
 using Microsoft.Net.Http.Headers;
+using WebApp.Models;
 using WebApp.Models.DTOs;
 
 namespace WebApp.Lib
 {
-    public class SubjectDownloader
+    public class WaniKaniSync
     {
         private readonly IConfiguration _Configuration;
         private readonly IHttpClientFactory _HttpClientFactory;
 
-        public SubjectDownloader(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public WaniKaniSync(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _Configuration = configuration;
             _HttpClientFactory = httpClientFactory;
@@ -17,57 +18,38 @@ namespace WebApp.Lib
 
         public void Start()
         {
-            RecurringJob.AddOrUpdate(nameof(SubjectDownloader), () => Run(), Cron.MinuteInterval(10));
+            RecurringJob.AddOrUpdate(nameof(WaniKaniSync), () => Run(), Cron.MinuteInterval(10));
         }
 
         public void Run()
         {
-            HttpClient httpClient = GetClient();
-
-            var summary = ReadSummary(httpClient);
-
-            ReadUser(summary, httpClient);
-        }
-
-        private void ReadUser(SummaryDTO summary, HttpClient httpClient)
-        {
-            var response = httpClient.GetAsync("user").Result;
-
-            if (!response.IsSuccessStatusCode) return;
-
-            var user = response.Content.ReadFromJsonAsync<UserDTO>().Result;
-
-            if (user == null) return;
-
             using var context = new WebAppContext();
 
-            var userRecord = context.Users.FirstOrDefault(u => u.Username == user.Data.Username);
-            var availableReviewsCount = summary.Data.Reviews.Where(r => r.AvailableAt < DateTime.UtcNow).Sum(r => r.SubjectIds.Count);
-            var availableLessonsCount = summary.Data.Lessons.Sum(r => r.SubjectIds.Count);
+            var user = GetUser(context);
 
-            if (userRecord == null)
-            {
-                context.Users.Add(new Models.User
-                {
-                    Level = user.Data.Level,
-                    StartedAt = user.Data.StartedAt,
-                    Username = user.Data.Username,
-                    AvailableReviewsCount = availableReviewsCount,
-                    AvailableLessonsCount = availableLessonsCount
-                });
-            }
-            else
-            {
-                userRecord.Level = user.Data.Level;
-                userRecord.AvailableReviewsCount = availableReviewsCount;
-                userRecord.AvailableLessonsCount = availableLessonsCount;
-            }
+            UpdateUser(user, GetSummary(user, context));
 
             context.SaveChanges();
         }
 
-        private SummaryDTO ReadSummary(HttpClient httpClient)
+        private User GetUser(WebAppContext context)
         {
+            if (string.IsNullOrWhiteSpace(_Configuration["WaniKani:UserApiKey"]))
+                throw new Exception("User api key must be set.");
+
+            var userRecord = context.Users.FirstOrDefault(u => u.ApiKey == _Configuration["WaniKani:UserApiKey"]);
+
+            userRecord ??= context.Users.Add(new User
+            {
+                ApiKey = $"{_Configuration["WaniKani:UserApiKey"]}"
+            }).Entity;
+
+            return userRecord;
+        }
+
+        private SummaryDTO GetSummary(User user, WebAppContext context)
+        {
+            var httpClient = GetClient();
             var response = httpClient.GetAsync("summary").Result;
 
             if (!response.IsSuccessStatusCode) return new();
@@ -84,16 +66,15 @@ namespace WebApp.Lib
 
             if (subjects == null) return new();
 
-            using var context = new WebAppContext();
-
             foreach (var subject in subjects.Data)
             {
-                var subjectRecord = context.Subjects.FirstOrDefault(s => s.RemoteId == subject.Id);
+                var subjectRecord = user.Subjects.FirstOrDefault(s => s.RemoteId == subject.Id);
 
                 if (subjectRecord == null)
                 {
-                    var newSubject = context.Subjects.Add(new Models.Subject
+                    var newSubject = context.Subjects.Add(new Subject
                     {
+                        User = user,
                         Characters = subject.Data.Characters ?? string.Empty,
                         ImageData = DownloadFile(subject.Data.CharacterImages),
                         CreatedAt = subject.Data.CreatedAt,
@@ -102,7 +83,7 @@ namespace WebApp.Lib
                         RemoteId = subject.Id
                     });
 
-                    context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new Models.SubjectMeaning
+                    context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new SubjectMeaning
                     {
                         Subject = newSubject.Entity,
                         AcceptedAnswer = m.AcceptedAnswer,
@@ -110,7 +91,7 @@ namespace WebApp.Lib
                         Primary = m.Primary
                     }));
 
-                    context.SubjectReadings.AddRange(subject.Data.Readings.Select(m => new Models.SubjectReading
+                    context.SubjectReadings.AddRange(subject.Data.Readings.Select(m => new SubjectReading
                     {
                         Subject = newSubject.Entity,
                         AcceptedAnswer = m.AcceptedAnswer,
@@ -121,9 +102,25 @@ namespace WebApp.Lib
                 }
             }
 
-            context.SaveChanges();
-
             return summary;
+        }
+
+        private void UpdateUser(User user, SummaryDTO summary)
+        {
+            user.AvailableLessonsCount = summary.Data.Lessons.Sum(r => r.SubjectIds.Count);
+            user.AvailableReviewsCount = summary.Data.Reviews.Where(r => r.AvailableAt < DateTime.UtcNow).Sum(r => r.SubjectIds.Count);
+
+            var response = GetClient().GetAsync("user").Result;
+
+            if (!response.IsSuccessStatusCode) return;
+
+            var userInfo = response.Content.ReadFromJsonAsync<UserDTO>().Result;
+
+            if (userInfo == null) return;
+
+            user.Username = userInfo.Data.Username;
+            user.Level = userInfo.Data.Level;
+            user.StartedAt = userInfo.Data.StartedAt;
         }
 
         private string? DownloadFile(List<SubjectCharacterImageDTO> characterImages)
