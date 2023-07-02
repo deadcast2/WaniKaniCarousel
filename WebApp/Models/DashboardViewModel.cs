@@ -18,7 +18,7 @@
 
         public string Username { get; set; }
 
-        public string Characters { get; set; } = "No subjects downloaded yet :(";
+        public string Characters { get; set; }
 
         public string? ImageData { get; set; }
         
