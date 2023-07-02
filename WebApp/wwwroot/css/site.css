@@ -13,10 +13,6 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
 .reading {
     margin-bottom: -0.5rem !important;
 }
