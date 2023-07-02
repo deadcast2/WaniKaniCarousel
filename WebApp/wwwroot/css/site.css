@@ -20,3 +20,7 @@ html {
 h1.subject {
     font-size: 8em;
 }
+
+svg {
+    height: 8em;
+}
