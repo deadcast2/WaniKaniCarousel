@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.Storage.SQLite;
+using Microsoft.EntityFrameworkCore;
 using WebApp.Lib;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +17,13 @@ builder.Services.AddHangfire(configuration => configuration
 
 builder.Services.AddHangfireServer();
 
-builder.Services.AddScoped<SubjectDownloader>();
+builder.Services.AddScoped<WaniKaniSync>();
 
 var app = builder.Build();
+
+// Autorun the migrations.
+using var db = new WebAppContext();
+db.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

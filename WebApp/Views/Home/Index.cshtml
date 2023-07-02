@@ -1,8 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model DashboardViewModel
+@{
+	ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-4">
+	@if (string.IsNullOrEmpty(Model.Characters))
+	{
+		<h1>No data available yet. Please check back in a moment.</h1>
+	}
+	else
+	{
+		<h3 class="reading">@Model.Reading</h3>
+
+		@if (Model.HasImage)
+		{
+			@Html.Raw(Model.ImageData)
+		}
+		else
+		{
+			<h1 class="subject">@Model.Characters</h1>
+		}
+
+		<h3>@Model.Meaning</h3>
+		<hr />
+		<ul class="list-group">
+			<li class="list-group-item d-flex justify-content-between align-items-center">
+				@Model.Username's Level
+				<span class="badge bg-primary rounded-pill">@Model.Level</span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between align-items-center">
+				Available Lessons
+				<span class="badge bg-primary rounded-pill">@Model.AvailableLessonsCount</span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between align-items-center">
+				Available Reviews
+				<span class="badge bg-primary rounded-pill">@Model.AvailableReviewsCount</span>
+			</li>
+		</ul>
+	}
 </div>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.Lib;
 
@@ -10,9 +11,11 @@ using WebApp.Lib;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    partial class WebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230630013501_AddAvailableCountsToUser")]
+    partial class AddAvailableCountsToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,17 +52,9 @@ namespace WebApp.Migrations
                     b.Property<int>("SeenLock")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("SubjectId");
 
                     b.HasIndex("RemoteId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Subjects");
                 });
@@ -126,10 +121,6 @@ namespace WebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ApiKey")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("AvailableLessonsCount")
                         .HasColumnType("INTEGER");
 
@@ -148,22 +139,9 @@ namespace WebApp.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("ApiKey");
-
                     b.HasIndex("Username");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("WebApp.Models.Subject", b =>
-                {
-                    b.HasOne("WebApp.Models.User", "User")
-                        .WithMany("Subjects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebApp.Models.SubjectMeaning", b =>
@@ -193,11 +171,6 @@ namespace WebApp.Migrations
                     b.Navigation("Meanings");
 
                     b.Navigation("Readings");
-                });
-
-            modelBuilder.Entity("WebApp.Models.User", b =>
-                {
-                    b.Navigation("Subjects");
                 });
 #pragma warning restore 612, 618
         }

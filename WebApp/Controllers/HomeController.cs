@@ -7,9 +7,9 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SubjectDownloader _SubjectDownloader;
+        private readonly WaniKaniSync _SubjectDownloader;
 
-        public HomeController(SubjectDownloader subjectDownloader)
+        public HomeController(WaniKaniSync subjectDownloader)
         {
             _SubjectDownloader = subjectDownloader;
         }
@@ -18,7 +18,7 @@ namespace WebApp.Controllers
         {
             _SubjectDownloader.Start();
 
-            return View();
+            return View(SubjectSelector.GetNext());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

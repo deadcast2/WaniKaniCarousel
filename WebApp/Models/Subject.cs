@@ -7,6 +7,10 @@ namespace WebApp.Models
     {
         public int SubjectId { get; set; }
 
+        public int UserId { get; set; }
+
+        public virtual User User { get; set; } = new();
+
         public int Level { get; set; }
 
         public string Characters { get; set; } = string.Empty;
@@ -21,8 +25,10 @@ namespace WebApp.Models
 
         public int RemoteId { get; set; }
 
-        public List<SubjectMeaning> Meanings { get; } = new();
+        public DateTime UpdatedAt { get; set; }
 
-        public List<SubjectReading> Readings { get; } = new();
+        public virtual ICollection<SubjectMeaning> Meanings { get; } = new HashSet<SubjectMeaning>();
+
+        public virtual ICollection<SubjectReading> Readings { get; } = new HashSet<SubjectReading>();
     }
 }

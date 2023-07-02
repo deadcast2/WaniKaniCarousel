@@ -6,7 +6,7 @@
 
         public int SubjectId { get; set; }
 
-        public Subject Subject { get; set; } = new();
+        public virtual Subject Subject { get; set; } = new();
 
         public string Type { get; set; } = string.Empty;
 

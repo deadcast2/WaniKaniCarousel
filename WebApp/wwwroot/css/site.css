@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.reading {
+    margin-bottom: -0.5rem !important;
+}
+
+h1.subject {
+    font-size: 8em;
+}

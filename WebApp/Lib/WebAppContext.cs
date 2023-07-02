@@ -22,6 +22,8 @@ namespace WebApp.Lib
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source={DbPath}");
+            => options
+                .UseLazyLoadingProxies()
+                .UseSqlite($"Data Source={DbPath}");
     }
 }
