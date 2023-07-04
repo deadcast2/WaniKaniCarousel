@@ -4,7 +4,7 @@
 }
 
 <div class="text-center">
-	@if (string.IsNullOrEmpty(Model.Characters))
+	@if (!Model.IsValid)
 	{
 		<h1>No data available yet. Please check back in a moment.</h1>
 	}

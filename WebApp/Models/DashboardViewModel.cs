@@ -6,6 +6,7 @@
 
         public DashboardViewModel(User user, Subject subject)
         {
+            IsValid = true;
             AvailableReviewsCount = user.AvailableReviewsCount;
             AvailableLessonsCount = user.AvailableLessonsCount;
             Username = user.Username;
@@ -15,6 +16,8 @@
             Meaning = subject.Meanings.FirstOrDefault(m => m.Primary)?.Meaning;
             Reading = subject.Readings.FirstOrDefault(m => m.Primary)?.Reading;
         }
+
+        public bool IsValid { get; set; }
 
         public string Username { get; set; }
 
