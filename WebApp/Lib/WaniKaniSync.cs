@@ -72,12 +72,13 @@ namespace WebApp.Lib
 
                 if (subjectRecord == null)
                 {
-                    // Assign the correct lock value to make sure this new subject gets a chance to be viewed.
-                    var seenLock = user.Subjects.Select(s => s.SeenLock).DefaultIfEmpty(0).Max();
+                    // Assign the correct display value to make sure this new subject gets a chance to be viewed.
+                    var maxDisplayCount = user.Subjects.Select(s => s.DisplayCount).DefaultIfEmpty(0).Max();
 
                     var newSubject = context.Subjects.Add(new Subject
                     {
                         User = user,
+                        Object = subject.Object,
                         Characters = subject.Data.Characters ?? string.Empty,
                         ImageData = DownloadFile(subject.Data.CharacterImages),
                         CreatedAt = subject.Data.CreatedAt,
@@ -85,7 +86,7 @@ namespace WebApp.Lib
                         HiddenAt = subject.Data.HiddenAt,
                         Level = subject.Data.Level,
                         RemoteId = subject.Id,
-                        SeenLock = seenLock > 0 ? seenLock - 1 : 0
+                        DisplayCount = maxDisplayCount > 0 ? maxDisplayCount - 1 : 0
                     });
 
                     context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new SubjectMeaning

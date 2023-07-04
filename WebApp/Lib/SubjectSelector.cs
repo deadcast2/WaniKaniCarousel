@@ -19,14 +19,14 @@ namespace WebApp.Lib
 
         private static Subject GetNextSubject(User user, WebAppContext context)
         {
-            var currSeenLock = user.Subjects.Max(s => s.SeenLock);
+            var maxDisplayCount = user.Subjects.Max(s => s.DisplayCount);
 
             // Only show subjects relevant from the past two weeks.
             var subjects = context.Subjects.Where(s => s.UpdatedAt > DateTime.UtcNow.AddDays(-14));
 
-            if (currSeenLock > 0)
+            if (maxDisplayCount > 0)
             {
-                var potentialSubjects = context.Subjects.Where(s => s.SeenLock == currSeenLock - 1);
+                var potentialSubjects = context.Subjects.Where(s => s.DisplayCount == maxDisplayCount - 1);
 
                 // When every subject has been viewed ignore the above predicate and just pick any at random.
                 if (potentialSubjects.Any())
@@ -37,7 +37,7 @@ namespace WebApp.Lib
 
             var nextSubject = subjects.OrderBy(s => EF.Functions.Random()).First();
 
-            nextSubject.SeenLock++;
+            nextSubject.DisplayCount++;
 
             context.SaveChanges();
 
