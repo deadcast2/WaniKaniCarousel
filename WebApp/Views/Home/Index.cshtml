@@ -21,22 +21,27 @@
 			<h1 class="subject">@Model.Characters</h1>
 		}
 
-		<h3 class="pt-1">@Model.Meaning</h3>
+		<h3 class="pt-1">@Model.Meaning<sup>@Model.FormattedObject</sup></h3>
 		<hr />
-		<ul class="list-group">
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				@Model.Username's Level
-				<span class="badge bg-primary rounded-pill">@Model.Level</span>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Available Lessons
-				<span class="badge bg-primary rounded-pill">@Model.AvailableLessonsCount</span>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Available Reviews
-				<span class="badge bg-primary rounded-pill">@Model.AvailableReviewsCount</span>
-			</li>
-		</ul>
+		<div class="card">
+			<div class="card-header">
+				Summary for @Model.Username
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Level
+					<span class="badge bg-primary rounded-pill">@Model.Level</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Available Lessons
+					<span class="badge bg-primary rounded-pill">@Model.AvailableLessonsCount</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Available Reviews
+					<span class="badge bg-primary rounded-pill">@Model.AvailableReviewsCount</span>
+				</li>
+			</ul>
+		</div>
 	}
 </div>
 
