@@ -58,7 +58,8 @@ namespace WebApp.Lib
 
             if (summary == null) return new();
 
-            response = httpClient.GetAsync($"subjects?ids={string.Join(",", summary.Data.Reviews.SelectMany(r => r.SubjectIds))}").Result;
+            response = httpClient.GetAsync(
+                $"subjects?ids={string.Join(",", summary.Data.Reviews.SelectMany(r => r.SubjectIds).Distinct())}").Result;
 
             if (!response.IsSuccessStatusCode) return new();
 
@@ -66,15 +67,15 @@ namespace WebApp.Lib
 
             if (subjects == null) return new();
 
-            foreach (var subject in subjects.Data)
+			var maxDisplayCount = context.Subjects.Where(s => s.User == user)
+                .Select(s => s.DisplayCount).DefaultIfEmpty().Max();
+
+			foreach (var subject in subjects.Data)
             {
-                var subjectRecord = user.Subjects.FirstOrDefault(s => s.RemoteId == subject.Id);
+                var subjectRecord = context.Subjects.FirstOrDefault(s => s.User == user && s.RemoteId == subject.Id);
 
                 if (subjectRecord == null)
                 {
-                    // Assign the correct display value to make sure this new subject gets a chance to be viewed.
-                    var maxDisplayCount = user.Subjects.Select(s => s.DisplayCount).DefaultIfEmpty(0).Max();
-
                     var newSubject = context.Subjects.Add(new Subject
                     {
                         User = user,
