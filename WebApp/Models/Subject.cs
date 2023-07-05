@@ -2,7 +2,7 @@
 
 namespace WebApp.Models
 {
-    [Index("RemoteId")]
+    [Index("RemoteId", IsUnique = true)]
     public class Subject
     {
         public int SubjectId { get; set; }
