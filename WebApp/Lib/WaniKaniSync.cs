@@ -21,6 +21,7 @@ namespace WebApp.Lib
             RecurringJob.AddOrUpdate(nameof(WaniKaniSync), () => Run(), Cron.MinuteInterval(10));
         }
 
+        [DisableConcurrentExecution(60)]
         public void Run()
         {
             using var context = new WebAppContext();
