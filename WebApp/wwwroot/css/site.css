@@ -13,14 +13,22 @@ html {
   min-height: 100%;
 }
 
+h1, h3 {
+    color: #000 !important;
+}
+
+.subject-container {
+    margin-top: 90px;
+}
+
 .reading {
     margin-bottom: -0.5rem !important;
 }
 
 .subject {
-    font-size: 8em;
+    font-size: 12em;
 }
 
 svg {
-    height: 8em;
+    height: 12em;
 }

@@ -3,7 +3,7 @@
 	ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div class="text-center subject-container">
 	@if (!Model.IsValid)
 	{
 		<h1>No data available yet. Please check back in a moment.</h1>
@@ -22,26 +22,6 @@
 		}
 
 		<h3 class="pt-1">@Model.Meaning<sup>@Model.FormattedObject</sup></h3>
-		<hr />
-		<div class="card">
-			<div class="card-header">
-				Summary for @Model.Username
-			</div>
-			<ul class="list-group list-group-flush">
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					Level
-					<span class="badge bg-primary rounded-pill">@Model.Level</span>
-				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					Available Lessons
-					<span class="badge bg-primary rounded-pill">@Model.AvailableLessonsCount</span>
-				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					Available Reviews
-					<span class="badge bg-primary rounded-pill">@Model.AvailableReviewsCount</span>
-				</li>
-			</ul>
-		</div>
 	}
 </div>
 
@@ -53,7 +33,7 @@
 
 			// Simple algorithm to make sure the subject never gets too big and causes a line break.
 			var resize = function () {
-				const maxHeightPX = 150; // Good max height based on e-ink resolution.
+				const maxHeightPX = 192; // Good max height based on e-ink resolution.
 				const $subject = $('.subject');
 
 				while ($subject.height() > maxHeightPX) {
