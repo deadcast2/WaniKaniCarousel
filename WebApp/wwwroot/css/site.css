@@ -13,14 +13,14 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
 .reading {
     margin-bottom: -0.5rem !important;
 }
 
-h1.subject {
+.subject {
     font-size: 8em;
+}
+
+svg {
+    height: 8em;
 }

@@ -2,7 +2,7 @@
 
 namespace WebApp.Models
 {
-    [Index("RemoteId")]
+    [Index("RemoteId", IsUnique = true)]
     public class Subject
     {
         public int SubjectId { get; set; }
@@ -10,6 +10,8 @@ namespace WebApp.Models
         public int UserId { get; set; }
 
         public virtual User User { get; set; } = new();
+
+        public string Object { get; set; } = string.Empty;
 
         public int Level { get; set; }
 
@@ -21,7 +23,7 @@ namespace WebApp.Models
 
         public DateTime? HiddenAt { get; set; }
 
-        public int SeenLock { get; set; }
+        public int DisplayCount { get; set; }
 
         public int RemoteId { get; set; }
 

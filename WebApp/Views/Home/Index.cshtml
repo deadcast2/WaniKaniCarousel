@@ -3,14 +3,14 @@
 	ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center mt-4">
-	@if (string.IsNullOrEmpty(Model.Characters))
+<div class="text-center">
+	@if (!Model.IsValid)
 	{
 		<h1>No data available yet. Please check back in a moment.</h1>
 	}
 	else
 	{
-		<h3 class="reading">@Model.Reading</h3>
+		<h3 class="reading">@Html.Raw(Model.Reading ?? "&nbsp;")</h3>
 
 		@if (Model.HasImage)
 		{
@@ -21,21 +21,47 @@
 			<h1 class="subject">@Model.Characters</h1>
 		}
 
-		<h3>@Model.Meaning</h3>
+		<h3 class="pt-1">@Model.Meaning<sup>@Model.FormattedObject</sup></h3>
 		<hr />
-		<ul class="list-group">
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				@Model.Username's Level
-				<span class="badge bg-primary rounded-pill">@Model.Level</span>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Available Lessons
-				<span class="badge bg-primary rounded-pill">@Model.AvailableLessonsCount</span>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">
-				Available Reviews
-				<span class="badge bg-primary rounded-pill">@Model.AvailableReviewsCount</span>
-			</li>
-		</ul>
+		<div class="card">
+			<div class="card-header">
+				Summary for @Model.Username
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Level
+					<span class="badge bg-primary rounded-pill">@Model.Level</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Available Lessons
+					<span class="badge bg-primary rounded-pill">@Model.AvailableLessonsCount</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					Available Reviews
+					<span class="badge bg-primary rounded-pill">@Model.AvailableReviewsCount</span>
+				</li>
+			</ul>
+		</div>
 	}
 </div>
+
+@section Scripts {
+	<script>
+		(function ($) {
+			addEventListener('load', e => resize());
+			addEventListener('resize', e => resize());
+
+			// Simple algorithm to make sure the subject never gets too big and causes a line break.
+			var resize = function () {
+				const maxHeightPX = 150; // Good max height based on e-ink resolution.
+				const $subject = $('.subject');
+
+				while ($subject.height() > maxHeightPX) {
+					const fontSize = parseFloat($subject.css('font-size'));
+
+					$subject.css('font-size', (fontSize - 1));
+				}
+			};
+		})(jQuery);
+	</script>
+}

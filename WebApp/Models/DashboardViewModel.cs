@@ -1,37 +1,59 @@
 ﻿namespace WebApp.Models
 {
-    public class DashboardViewModel
-    {
-        public DashboardViewModel() { }
+	public class DashboardViewModel
+	{
+		public DashboardViewModel() { }
 
-        public DashboardViewModel(User user, Subject subject)
-        {
-            AvailableReviewsCount = user.AvailableReviewsCount;
-            AvailableLessonsCount = user.AvailableLessonsCount;
-            Username = user.Username;
-            Level = user.Level;
-            Characters = subject.Characters;
-            ImageData = subject.ImageData;
-            Meaning = subject.Meanings.FirstOrDefault(m => m.Primary)?.Meaning;
-            Reading = subject.Readings.FirstOrDefault(m => m.Primary)?.Reading;
-        }
+		public DashboardViewModel(User user, Subject subject)
+		{
+			IsValid = true;
+			Username = user.Username;
+			Characters = subject.Characters;
+			ImageData = subject.ImageData;
+			Meaning = subject.Meanings.FirstOrDefault(m => m.Primary)?.Meaning;
+			Reading = subject.Readings.FirstOrDefault(m => m.Primary)?.Reading;
+			Object = subject.Object;
+			Level = user.Level;
+			AvailableReviewsCount = user.AvailableReviewsCount;
+			AvailableLessonsCount = user.AvailableLessonsCount;
+		}
 
-        public string Username { get; set; }
+		public bool IsValid { get; }
 
-        public string Characters { get; set; }
+		public string Username { get; }
 
-        public string? ImageData { get; set; }
-        
-        public string? Meaning { get; }
+		public string Characters { get; }
 
-        public string? Reading { get; }
+		public string? ImageData { get; }
 
-        public int Level { get; }
+		public string? Meaning { get; }
 
-        public int AvailableReviewsCount { get; }
+		public string? Reading { get; }
 
-        public int AvailableLessonsCount { get; }
+		public string Object { get; }
 
-        public bool HasImage => !string.IsNullOrWhiteSpace(ImageData);
-    }
+		public int Level { get; }
+
+		public int AvailableReviewsCount { get; }
+
+		public int AvailableLessonsCount { get; }
+
+		public bool HasImage => !string.IsNullOrWhiteSpace(ImageData);
+
+		public string FormattedObject
+		{
+			get
+			{
+				if (Object.Contains("_"))
+				{
+					var parts = Object.Split('_');
+
+					if (parts.Length > 0 && parts[1].Length > 0)
+						return parts[1][..1];
+				}
+
+				return Object[..1];
+			}
+		}
+	}
 }

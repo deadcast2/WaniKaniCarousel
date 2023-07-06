@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.Lib;
 
@@ -10,9 +11,11 @@ using WebApp.Lib;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    partial class WebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230704191259_AddObjectToSubject")]
+    partial class AddObjectToSubject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +37,6 @@ namespace WebApp.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("DisplayCount")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime?>("HiddenAt")
                         .HasColumnType("TEXT");
 
@@ -53,6 +53,9 @@ namespace WebApp.Migrations
                     b.Property<int>("RemoteId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("SeenLock")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
@@ -61,8 +64,7 @@ namespace WebApp.Migrations
 
                     b.HasKey("SubjectId");
 
-                    b.HasIndex("RemoteId")
-                        .IsUnique();
+                    b.HasIndex("RemoteId");
 
                     b.HasIndex("UserId");
 

@@ -21,6 +21,7 @@ namespace WebApp.Lib
             RecurringJob.AddOrUpdate(nameof(WaniKaniSync), () => Run(), Cron.MinuteInterval(10));
         }
 
+        [DisableConcurrentExecution(60)]
         public void Run()
         {
             using var context = new WebAppContext();
@@ -58,7 +59,8 @@ namespace WebApp.Lib
 
             if (summary == null) return new();
 
-            response = httpClient.GetAsync($"subjects?ids={string.Join(",", summary.Data.Reviews.SelectMany(r => r.SubjectIds))}").Result;
+            response = httpClient.GetAsync(
+                $"subjects?ids={string.Join(",", summary.Data.Reviews.SelectMany(r => r.SubjectIds).Distinct())}").Result;
 
             if (!response.IsSuccessStatusCode) return new();
 
@@ -66,18 +68,19 @@ namespace WebApp.Lib
 
             if (subjects == null) return new();
 
-            foreach (var subject in subjects.Data)
+			var maxDisplayCount = context.Subjects.Where(s => s.User == user)
+                .Select(s => s.DisplayCount).DefaultIfEmpty().Max();
+
+			foreach (var subject in subjects.Data)
             {
-                var subjectRecord = user.Subjects.FirstOrDefault(s => s.RemoteId == subject.Id);
+                var subjectRecord = context.Subjects.FirstOrDefault(s => s.User == user && s.RemoteId == subject.Id);
 
                 if (subjectRecord == null)
                 {
-                    // Assign the correct lock value to make sure this new subject gets a chance to be viewed.
-                    var seenLock = user.Subjects.Select(s => s.SeenLock).DefaultIfEmpty(0).Max();
-
                     var newSubject = context.Subjects.Add(new Subject
                     {
                         User = user,
+                        Object = subject.Object,
                         Characters = subject.Data.Characters ?? string.Empty,
                         ImageData = DownloadFile(subject.Data.CharacterImages),
                         CreatedAt = subject.Data.CreatedAt,
@@ -85,7 +88,7 @@ namespace WebApp.Lib
                         HiddenAt = subject.Data.HiddenAt,
                         Level = subject.Data.Level,
                         RemoteId = subject.Id,
-                        SeenLock = seenLock > 0 ? seenLock - 1 : 0
+                        DisplayCount = maxDisplayCount > 0 ? maxDisplayCount - 1 : 0
                     });
 
                     context.SubjectMeanings.AddRange(subject.Data.Meanings.Select(m => new SubjectMeaning
