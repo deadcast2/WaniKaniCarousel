@@ -14,9 +14,8 @@ Publish the web app to the published folder and secure shell copy it using:
 
 `scp -r published/* pi@192.168.0.25:/home/pi/WaniKaniCarousel/published/`
 
-`DISPLAY=:0
-@reboot cd ~/WaniKaniCarousel/published/ && ./WebApp
-* * * * *           cd ~/WaniKaniCarousel/ConsoleApp && python3 App.py >> ~/wanikanicarousel.log 2>&1
-* * * * * sleep 30; cd ~/WaniKaniCarousel/ConsoleApp && python3 App.py >> ~/wanikanicarousel.log 2>&1`
+`DISPLAY=:0`
+`@reboot cd ~/WaniKaniCarousel/published/ && ./WebApp`
+`* * * * *           cd ~/WaniKaniCarousel/ConsoleApp && python3 App.py >> ~/wanikanicarousel.log 2>&1`
 
 
