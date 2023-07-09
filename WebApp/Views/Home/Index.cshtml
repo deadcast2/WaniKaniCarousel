@@ -10,7 +10,7 @@
 	}
 	else
 	{
-		<h3 class="reading">@Html.Raw(Model.Reading ?? "&nbsp;")</h3>
+		<h3 class="reading" lang="ja">@Html.Raw(Model.Reading ?? "&nbsp;")</h3>
 
 		@if (Model.HasImage)
 		{
@@ -18,7 +18,7 @@
 		}
 		else
 		{
-			<h1 class="subject">@Model.Characters</h1>
+			<h1 class="subject" lang="ja">@Model.Characters</h1>
 		}
 
 		<h3 class="pt-1">@Model.Meaning<sup>@Model.FormattedObject</sup></h3>
