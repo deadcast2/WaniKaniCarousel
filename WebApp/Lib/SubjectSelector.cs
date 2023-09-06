@@ -21,8 +21,8 @@ namespace WebApp.Lib
         {
             var maxDisplayCount = user.Subjects.Max(s => s.DisplayCount);
 
-            // Only show subjects relevant from the past two weeks.
-            var subjects = context.Subjects.Where(s => s.UpdatedAt > DateTime.UtcNow.AddDays(-14));
+            // Only show subjects relevant from the past week.
+            var subjects = context.Subjects.Where(s => s.UpdatedAt > DateTime.UtcNow.AddDays(-7));
 
             if (maxDisplayCount > 0)
             {
