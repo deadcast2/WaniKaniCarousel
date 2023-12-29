@@ -21,6 +21,23 @@ Publish the web app to the published folder and secure shell copy it using:
 
 For me the above address for my local connected pi is 192.168.0.25.
 
+## Post Deployment
+
+When you finish deploying the .net core app, update the published appsettings.json file to contain your WaniKani API key:
+```
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "WaniKani": {
+    "UserApiKey": "your wanikani api key"
+  }
+}
+```
 ## Crontab
 
 Add this crontab entry to start up the .net core web app and to have the python app grab the most recent vocabulary.
